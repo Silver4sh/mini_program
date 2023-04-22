@@ -19,7 +19,7 @@ def theme():
         os.system('cls')
 
         if choice_theme == 1: ## pick theme
-            anime = pd.read_csv('E:\\Latihan\\GitHub Clone\\mini_projects\\mini-progam\\mini_apps\\library\\datas\\anime.csv')
+            anime = pd.read_csv('anime.csv')
             genre_anime = listing(anime)
             layer2 = True
 
