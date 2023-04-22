@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-database = pd.read_csv('E:\\Latihan\\GitHub Clone\\mini_projects\\mini-progam\\mini_apps\\movie_tubi\\raw_data\\tubi.csv')
+database = pd.read_csv('tubi.csv')
 database = database.rename(columns={
     'Title_URL': 'URL',
     'Content': 'Year',
