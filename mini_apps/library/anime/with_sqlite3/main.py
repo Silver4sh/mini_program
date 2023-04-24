@@ -2,8 +2,7 @@ from prettytable import PrettyTable
 import csv, sqlite3, os, sys
 
 ## Path data
-#csv_file = "E:\\Latihan\\data\\anime.csv"
-db = "E:\\Latihan\\script\\data_base\\anime.db"
+db = "anime.db"
 
 ## Connect to DB
 def connect_db(db):
