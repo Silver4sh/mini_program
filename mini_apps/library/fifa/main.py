@@ -2,8 +2,7 @@ import pandas as pd
 import sys, signal, os
 
 ## Show AVG
-def avg(data):
-    index = input(str("Filter by: ")).lower()
+def avg(data,index):
     unique = data[index].unique() 
     result = []
     for i in unique:
@@ -16,8 +15,7 @@ def avg(data):
                         ])
 
 ## Show Player
-def show_player(data):
-    index = input(str("Filter by: ")).lower()
+def show_player(data,index):
     unique = data[index].unique()
     result = []
     for i in unique:
@@ -29,8 +27,7 @@ def show_player(data):
                         ])
 
 ## Search
-def search(data):
-    index = input(str("Filter by: ")).lower()
+def search(data,index):
     result = []
     for i in data.loc[data[index]]:
         result.append([i.name, i.nationality, i.position, i.overall, i.age, i.potential, i.team])
@@ -46,26 +43,65 @@ def signal_handler(signal, frame):
     print("====================")
     sys.exit(1)
 
-## Menu
-def menu():
-    signal.signal(signal.SIGINT, signal_handler)
-    print(1)
-    menu = False
-    while menu == False:
-        data = pd.read_csv("E:\\Latihan\\script\\Fifa\\data\\FIFA-21.csv", sep = ";")
-        input_1 = int(input("Show AVG[1]\nShow Player[2]\nSearch by[3]\nYour Choice : "))
-        if input_1 == 1:
-            datas = avg(data)
-            print(datas.sort_values("Potential", ascending=False).to_markdown(index=False))
-        elif input_1 == 2:
-            datas = show_player(data)
-            print(datas.sort_values("Potential", ascending=False).to_markdown(index=False))
-        elif input_1 == 3:
-            datas = search(data)
-            print(datas.sort_values("Potential", ascending=False).to_markdown(index=False))
-        elif input_1 == 99:
-            sys.exit(1)
-        else:
-            print('\nThat is not a valid number.')
+def limitation(datas):
+    showing = True
+    first_index = 0
+    last_index = 10
 
-menu()
+    while showing:
+        if len(datas) < 10:
+                print(datas.to_markdown(index=False))
+        else:
+            choose = input('\n\nNext[1], Back[2], Exit[3]\nYour choice: ')
+            os.system('cls')
+            if int(choose) == 1:
+                first_index = last_index
+                last_index += 10
+                show = datas[first_index:last_index].to_markdown(index=False)
+                if len(show) < 10:
+                    print(show, '\n\nThis is the end\n')
+                    showing = False     
+                else:
+                    print(show)
+            elif int(choose) == 2:
+                os.system('cls')
+                showing = False
+            elif int(choose) == 3:
+                os._exit(os.EX_OK)
+            else:
+                print("\nThat is not a valid number.")
+
+## Menu
+def main():
+    os.system('cls')
+    signal.signal(signal.SIGINT, signal_handler)
+    #print("")
+    menu = True
+    while menu:
+        data = pd.read_csv("E:\\Latihan\\script\\Fifa\\data\\FIFA-21.csv", sep = ";").drop("player_id", axis=1).sort_values("potential", ascending=False)
+        input_1 = int(input("Show AVG[1]\nShow Player[2]\nSearch by[3]\nYour Choice : "))
+        os.system('cls')
+        menu2 = True
+        while menu2:
+            input_2 = input("\nFiller By : ").lower()
+            if input_2 in ["name", "nationality", "position", "overall", "age", "potential", "team"]:
+                if input_1 == 1:
+                    os.system('cls')
+                    limitation(avg(data,input_2))
+                elif input_1 == 2:
+                    os.system('cls')
+                    limitation(show_player(data,input_2))
+                elif input_1 == 3:
+                    os.system('cls')
+                    limitation(search(data,input_2))
+                elif input_1 == 99:
+                    sys.exit(1)
+                else:
+                    os.system('cls')
+                    print('That is not a valid number.\n')
+                menu2 = False
+            else :
+                    os.system('cls')
+                    print('That is not a valid number.\n')
+
+main()
