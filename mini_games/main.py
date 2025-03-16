@@ -14,7 +14,6 @@ def create_game_window(title, width, height, bg_color="#e6f2ff"):
 def launch_guess_number():
     win = create_game_window("Guess Number", 300, 250, "#dff0d8")
     
-    # Komputer memilih angka acak antara 1 dan 100
     number = random.randint(1, 100)
     
     prompt = ttk.Label(win, text="Tebak angka antara 1 sampai 100", font=("Helvetica", 12))
@@ -48,34 +47,65 @@ def launch_guess_number():
     submit_btn = ttk.Button(win, text="Submit", command=check_guess)
     submit_btn.pack(pady=10)
     
-    # Bind tombol Enter untuk submit
     guess_entry.bind("<Return>", lambda event: check_guess())
     
-    # Tombol kembali ke menu utama
     back_btn = ttk.Button(win, text="Main Menu", command=win.destroy)
     back_btn.pack(pady=5)
 
-# --- Mini Game: Hang Man ---
+# --- Mini Game: Hang Man dengan tema Buah atau Hewan ---
 def launch_hang_man():
-    win = create_game_window("Hang Man", 400, 350, "#fff2cc")
+    win = create_game_window("Hang Man", 400, 400, "#fff2cc")
     
-    # Kata yang harus ditebak (bisa dikembangkan dengan list kata)
-    word = "python"
-    guessed = ["_" for _ in word]
+    # Daftar kata untuk tiap tema
+    fruits = ["apel", "pisang", "jeruk", "mangga", "anggur"]
+    animals = ["kucing", "anjing", "gajah", "harimau", "kuda"]
+    
+    theme_frame = ttk.Frame(win)
+    theme_frame.pack(pady=10)
+    theme_label = ttk.Label(theme_frame, text="Pilih Tema:", font=("Helvetica", 12))
+    theme_label.pack(side=tk.LEFT)
+    theme_var = tk.StringVar()
+    theme_combo = ttk.Combobox(theme_frame, textvariable=theme_var, values=["Buah", "Hewan"], state="readonly", font=("Helvetica", 12))
+    theme_combo.pack(side=tk.LEFT, padx=5)
+    theme_combo.current(0)
+    
+    start_btn = ttk.Button(win, text="Mulai Game")
+    start_btn.pack(pady=5)
+    
+    word_label = ttk.Label(win, text="", font=("Helvetica", 20))
+    info_label = ttk.Label(win, text="", font=("Helvetica", 12))
+    letter_entry = ttk.Entry(win, font=("Helvetica", 12))
+    message_label = ttk.Label(win, text="", font=("Helvetica", 10))
+    submit_btn = ttk.Button(win, text="Tebak")
+    
+    word = ""
+    guessed = []
     attempts = 6
     used_letters = set()
     
-    word_label = ttk.Label(win, text=" ".join(guessed), font=("Helvetica", 20))
-    word_label.pack(pady=10)
+    def start_game():
+        nonlocal word, guessed, attempts, used_letters
+        used_letters = set()
+        attempts = 6
+        theme = theme_var.get()
+        if theme == "Buah":
+            word = random.choice(fruits)
+        else:
+            word = random.choice(animals)
+        guessed = ["_" for _ in word]
+        
+        theme_frame.pack_forget()
+        start_btn.pack_forget()
+        
+        word_label.config(text=" ".join(guessed))
+        word_label.pack(pady=10)
+        info_label.config(text=f"Sisa kesempatan: {attempts}")
+        info_label.pack(pady=5)
+        letter_entry.pack(pady=5)
+        message_label.pack(pady=5)
+        submit_btn.pack(pady=10)
     
-    info_label = ttk.Label(win, text=f"Sisa kesempatan: {attempts}", font=("Helvetica", 12))
-    info_label.pack(pady=5)
-    
-    letter_entry = ttk.Entry(win, font=("Helvetica", 12))
-    letter_entry.pack(pady=5)
-    
-    message_label = ttk.Label(win, text="", font=("Helvetica", 10))
-    message_label.pack(pady=5)
+    start_btn.config(command=start_game)
     
     def guess_letter():
         nonlocal attempts
@@ -115,11 +145,8 @@ def launch_hang_man():
             else:
                 win.destroy()
     
-    submit_btn = ttk.Button(win, text="Tebak", command=guess_letter)
-    submit_btn.pack(pady=10)
-    
-    # Bind tombol Enter untuk submit
     letter_entry.bind("<Return>", lambda event: guess_letter())
+    submit_btn.config(command=guess_letter)
     
     back_btn = ttk.Button(win, text="Main Menu", command=win.destroy)
     back_btn.pack(pady=5)
@@ -185,7 +212,7 @@ def main():
     root.geometry("450x250")
     root.configure(bg="#f0f0f0")
     
-    # Tambahkan menu bar profesional
+    # Menu Bar
     menu_bar = tk.Menu(root)
     file_menu = tk.Menu(menu_bar, tearoff=0)
     file_menu.add_command(label="Exit", command=root.quit)
@@ -193,7 +220,7 @@ def main():
     
     help_menu = tk.Menu(menu_bar, tearoff=0)
     help_menu.add_command(label="About", command=lambda: messagebox.showinfo("About", 
-        "Mini Games Collection v1.0\nDibuat dengan Python dan Tkinter.\nBersama, kita mengubah kesederhanaan menjadi revolusi game!"))
+        "Mini Games Collection v1.0\nDibuat dengan Python dan Tkinter.\nKesederhanaan bisa jadi awal revolusi!"))
     menu_bar.add_cascade(label="Help", menu=help_menu)
     
     root.config(menu=menu_bar)
