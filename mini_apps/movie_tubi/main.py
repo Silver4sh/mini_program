@@ -1,5 +1,4 @@
 import sys
-import os
 import csv
 import random
 from PyQt5.QtWidgets import (
@@ -23,11 +22,6 @@ class ClickableTableWidget(QTableWidget):
 
 # --- Fungsi untuk memuat data CSV ---
 def load_csv_data_from_file():
-    """
-    Memunculkan file dialog untuk memilih file CSV.
-    Mengembalikan list of dictionary jika file berhasil dibaca,
-    atau list kosong jika tidak ada file yang dipilih.
-    """
     csv_path, _ = QFileDialog.getOpenFileName(
         None, "Pilih CSV File", "", "CSV Files (*.csv)"
     )
@@ -58,7 +52,7 @@ class HomePage(QWidget):
         layout.addWidget(titleLabel)
         
         self.table = ClickableTableWidget()
-        self.table.setSortingEnabled(True)  # Aktifkan fitur sorting
+        self.table.setSortingEnabled(True) 
         layout.addWidget(self.table)
         self.setLayout(layout)
         
@@ -93,10 +87,8 @@ class SearchPage(QWidget):
         titleLabel.setStyleSheet("font-size: 20px; font-weight: bold;")
         layout.addWidget(titleLabel)
         
-        # Layout untuk opsi field dan input pencarian
         searchLayout = QHBoxLayout()
         
-        # Dropdown untuk memilih field (misalnya: title, director, dll)
         self.fieldComboBox = QComboBox()
         if self.movies:
             headers = list(self.movies[0].keys())
@@ -105,13 +97,11 @@ class SearchPage(QWidget):
             self.fieldComboBox.addItem("title")
         searchLayout.addWidget(self.fieldComboBox)
         
-        # Input pencarian dengan auto-suggest (QCompleter)
         self.searchEdit = QLineEdit()
         self.searchEdit.setPlaceholderText("Masukkan kata kunci pencarian...")
         searchLayout.addWidget(self.searchEdit)
-        self.updateCompleter()  # Inisialisasi auto-suggest
+        self.updateCompleter() 
         
-        # Ketika field pilihan berubah, perbarui auto-suggest
         self.fieldComboBox.currentIndexChanged.connect(self.updateCompleter)
         
         searchButton = QPushButton("Cari")
@@ -166,7 +156,6 @@ class ForYourPage(QWidget):
         titleLabel.setStyleSheet("font-size: 20px; font-weight: bold;")
         layout.addWidget(titleLabel)
         
-        # Tombol untuk mengambil rekomendasi acak
         randomButton = QPushButton("Random")
         randomButton.clicked.connect(self.load_random)
         layout.addWidget(randomButton)
@@ -175,7 +164,7 @@ class ForYourPage(QWidget):
         layout.addWidget(self.table)
         self.setLayout(layout)
         
-        self.load_random()  # Tampilkan 5 film acak pertama
+        self.load_random() 
         
     def load_random(self):
         if self.movies:
@@ -217,7 +206,6 @@ class TopMoviePage(QWidget):
         layout.addWidget(self.table)
         self.setLayout(layout)
         
-        # Misal, urutkan film berdasarkan judul (bisa diganti sesuai kebutuhan)
         sorted_movies = sorted(self.movies, key=lambda m: m.get("title", ""))
         self.populate_table(sorted_movies)
         
@@ -263,13 +251,11 @@ class MovieTubiWindow(QMainWindow):
         self.setWindowTitle("Movie Tubi")
         self.setGeometry(100, 100, 800, 600)
         
-        # Saat pertama kali, user harus memilih file CSV
         self.movies = load_csv_data_from_file()
         
         self.initUI()
         
     def initUI(self):
-        # Gunakan QStackedWidget untuk menyimpan berbagai halaman
         self.stackedWidget = QStackedWidget()
         self.pages = {}
         self.pages["Home"] = HomePage(self.movies)
